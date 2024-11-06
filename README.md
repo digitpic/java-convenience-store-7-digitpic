@@ -14,7 +14,7 @@ __구매자의 할인 혜택과 재고 상황을 고려하여 최종 결제 금�
 - Exception이 아닌 IllegalArgumentException, IllegalStateException 등과 같은 명확한 유형을 처리한다.
 
 ## 🎯 세부 기능 목록
-- [ ] 파일 입출력을 통한 파일 읽기
+- [x] 파일 입출력을 통한 파일 읽기
 
 - [ ] 환영 인사
 - [ ] 현재 재고 상태 출력
