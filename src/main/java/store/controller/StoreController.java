@@ -1,9 +1,9 @@
 package store.controller;
 
 import store.model.Membership;
-import store.model.Orders;
-import store.model.Products;
-import store.model.Promotions;
+import store.model.order.Orders;
+import store.model.product.Products;
+import store.model.promotion.Promotions;
 import store.util.CsvReader;
 import store.view.InputView;
 import store.view.OutputView;

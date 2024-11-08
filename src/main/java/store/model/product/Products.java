@@ -1,4 +1,4 @@
-package store.model;
+package store.model.product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ public class Products {
     private List<Product> products;
 
     public Products(final List<String> productsInformation) {
-        validate(productsInformation);
+        validateNull(productsInformation);
         this.products = parseToProducts(productsInformation);
     }
 
@@ -20,10 +20,6 @@ public class Products {
             stringBuilder.append(product.toString());
         }
         return stringBuilder.toString();
-    }
-
-    private void validate(final List<String> productsInformation) {
-        validateNull(productsInformation);
     }
 
     private void validateNull(final List<String> productsInformation) {

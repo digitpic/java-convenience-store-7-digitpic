@@ -1,12 +1,12 @@
-package store.model;
+package store.model.product;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static store.constants.ExceptionMessage.INPUT_CANNOT_HAVE_FIRST_LAST_BLANK;
 import static store.constants.ExceptionMessage.INPUT_MUST_CONTAIN_COMMA;
 import static store.constants.ExceptionMessage.INPUT_VALUE_MUST_BE_NUMERIC;
 import static store.constants.ExceptionMessage.INVALID_PRODUCT_INFORMATION_COUNT;
-import static store.constants.ExceptionMessage.INPUT_CANNOT_HAVE_FIRST_LAST_BLANK;
 
 public class Product {
     private static final int NAME_INDEX = 0;
@@ -21,7 +21,7 @@ public class Product {
     private String promotion;
 
     public Product(final String information) {
-        validate(information);
+        validateComma(information);
         List<String> separated = separateByComma(information);
         this.name = separated.get(NAME_INDEX);
         this.price = Integer.parseInt(separated.get(PRICE_INDEX));
@@ -31,14 +31,25 @@ public class Product {
 
     @Override
     public String toString() {
-        if (promotion.equals("null")) {
-            promotion = "";
-        }
-        return String.format("- %s %,d원 %d개 %s\n", name, price, quantity, promotion);
+        String quantityDisplay = makeQuantityDisplay(quantity);
+        String promotionDisplay = makePromotionDisplay(promotion);
+        return String.format("- %s %,d원 %s %s\n", name, price, quantityDisplay, promotionDisplay);
     }
 
-    private void validate(final String information) {
-        validateComma(information);
+    private String makeQuantityDisplay(int quantity) {
+        String quantityDisplay = quantity + "개";
+        if (quantity == 0) {
+            quantityDisplay = "재고 없음";
+        }
+        return quantityDisplay;
+    }
+
+    private String makePromotionDisplay(String promotion) {
+        String promotionDisplay = promotion;
+        if (promotion.equals("null")) {
+            promotionDisplay = "";
+        }
+        return promotionDisplay;
     }
 
     private void validateComma(final String information) {

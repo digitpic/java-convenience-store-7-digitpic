@@ -1,4 +1,4 @@
-package store.model;
+package store.model.promotion;
 
 import java.util.ArrayList;
 import java.util.List;

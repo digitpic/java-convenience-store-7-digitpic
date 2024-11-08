@@ -1,4 +1,4 @@
-package store.model;
+package store.model.order;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
