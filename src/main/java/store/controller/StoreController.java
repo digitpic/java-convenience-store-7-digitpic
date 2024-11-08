@@ -25,6 +25,7 @@ public class StoreController {
         printStockStatus(products.toString());
         Orders orders = requestOrders();
         Membership membership = requestMembership();
+        String rawRestartConfirmation = requestRestartConfirmation();
     }
 
     private Products getProductsInformation() {
@@ -51,5 +52,9 @@ public class StoreController {
     private Membership requestMembership() {
         String rawMembership = inputView.requestMembership();
         return new Membership(rawMembership);
+    }
+
+    private String requestRestartConfirmation() {
+        return inputView.requestRestartConfirmation();
     }
 }
