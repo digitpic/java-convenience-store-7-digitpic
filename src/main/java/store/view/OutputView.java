@@ -16,4 +16,8 @@ public class OutputView {
     public void printStockStatus(final String stockStatus) {
         System.out.println(LINE_BREAK + stockStatus);
     }
+
+    public void printErrorMessage(String message) {
+        System.out.println(message + LINE_BREAK);
+    }
 }

@@ -10,6 +10,7 @@ import store.view.InputView;
 import store.view.OutputView;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class StoreController {
     private final OutputView outputView;
@@ -25,8 +26,8 @@ public class StoreController {
         Promotions promotions = getPromotionsInformation();
         printStockStatus(products.toString());
         Orders orders = requestOrders();
-        updateStockStatus(products, orders);
         Membership membership = requestMembership();
+        updateStockStatus(products, orders);
         String rawRestartConfirmation = requestRestartConfirmation();
     }
 
@@ -47,8 +48,10 @@ public class StoreController {
     }
 
     private Orders requestOrders() {
-        String rawOrder = inputView.requestOrder();
-        return new Orders(rawOrder);
+        return getValidInput(() -> {
+            String rawOrders = inputView.requestOrder();
+            return new Orders(rawOrders);
+        });
     }
 
     private void updateStockStatus(Products products, Orders orders) {
@@ -58,11 +61,23 @@ public class StoreController {
     }
 
     private Membership requestMembership() {
-        String rawMembership = inputView.requestMembership();
-        return new Membership(rawMembership);
+        return getValidInput(() -> {
+            String rawMembership = inputView.requestMembership();
+            return new Membership(rawMembership);
+        });
     }
 
     private String requestRestartConfirmation() {
         return inputView.requestRestartConfirmation();
+    }
+
+    private <T> T getValidInput(Supplier<T> inputSupplier) {
+        while (true) {
+            try {
+                return inputSupplier.get();
+            } catch (IllegalArgumentException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
+        }
     }
 }

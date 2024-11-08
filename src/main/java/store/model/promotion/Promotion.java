@@ -21,8 +21,8 @@ public class Promotion {
     private final String name;
     private final int buyCount;
     private final int getCount;
-    private final LocalDateTime eventStartDate;
-    private final LocalDateTime eventEndDate;
+    private final LocalDateTime startDate;
+    private final LocalDateTime endDate;
 
     public Promotion(String information) {
         validate(information);
@@ -30,8 +30,8 @@ public class Promotion {
         this.name = separated.get(NAME_INDEX);
         this.buyCount = Integer.parseInt(separated.get(BUY_COUNT_INDEX));
         this.getCount = Integer.parseInt(separated.get(GET_COUNT_INDEX));
-        this.eventStartDate = LocalDate.parse(separated.get(EVENT_START_DATE_INDEX)).atStartOfDay();
-        this.eventEndDate = LocalDate.parse(separated.get(EVENT_END_DATE_INDEX)).atTime(23, 59, 59);
+        this.startDate = LocalDate.parse(separated.get(EVENT_START_DATE_INDEX)).atStartOfDay();
+        this.endDate = LocalDate.parse(separated.get(EVENT_END_DATE_INDEX)).atTime(23, 59, 59);
     }
 
     private void validate(final String information) {
