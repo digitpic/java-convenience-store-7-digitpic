@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static store.constants.ExceptionMessage.INPUT_MUST_CONTAIN_COMMA;
 import static store.constants.ExceptionMessage.INPUT_VALUE_MUST_BE_NUMERIC;
 import static store.constants.ExceptionMessage.INVALID_PRODUCT_INFORMATION_COUNT;
-import static store.constants.ExceptionMessage.PRODUCT_CANNOT_HAVE_FIRST_LAST_BLANK_IN_NAME;
+import static store.constants.ExceptionMessage.INPUT_CANNOT_HAVE_FIRST_LAST_BLANK;
 
 class ProductTest {
     @Test
@@ -41,7 +41,7 @@ class ProductTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "콜라,1000,10", "콜라,1000,10,null,null" })
-    void 값이_네_개가_아닌_경우_예외가_발생한다(String input) {
+    void 값이_네_개가_아닌_경우_예외가_발생한다(final String input) {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Product(input))
@@ -59,11 +59,11 @@ class ProductTest {
             "콜라,1000,10, null",
             "콜라,1000,10,null "
     })
-    void 각_요소의_맨_앞_맨_뒤에_공백이_있는_경우_예외가_발생한다(String input) {
+    void 각_요소의_맨_앞_맨_뒤에_공백이_있는_경우_예외가_발생한다(final String input) {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Product(input))
-                .withMessage(PRODUCT_CANNOT_HAVE_FIRST_LAST_BLANK_IN_NAME.getMessage());
+                .withMessage(INPUT_CANNOT_HAVE_FIRST_LAST_BLANK.getMessage());
     }
 
     @Test

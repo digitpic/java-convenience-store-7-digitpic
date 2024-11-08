@@ -7,7 +7,7 @@ import java.util.List;
 import static store.constants.ExceptionMessage.INPUT_VALUE_MUST_BE_NUMERIC;
 import static store.constants.ExceptionMessage.ORDER_ELEMENT_MUST_SPLIT_BY_HYPHEN;
 import static store.constants.ExceptionMessage.ORDER_MUST_CONTAIN_SQUARE_BRACKETS;
-import static store.constants.ExceptionMessage.PRODUCT_CANNOT_HAVE_FIRST_LAST_BLANK_IN_NAME;
+import static store.constants.ExceptionMessage.INPUT_CANNOT_HAVE_FIRST_LAST_BLANK;
 
 public class Order {
     private static final int NAME_INDEX = 0;
@@ -81,7 +81,7 @@ public class Order {
             if (element.equals(stripped)) {
                 return;
             }
-            throw new IllegalArgumentException(PRODUCT_CANNOT_HAVE_FIRST_LAST_BLANK_IN_NAME.getMessage());
+            throw new IllegalArgumentException(INPUT_CANNOT_HAVE_FIRST_LAST_BLANK.getMessage());
         });
     }
 
