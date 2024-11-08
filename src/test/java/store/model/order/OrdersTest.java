@@ -3,7 +3,7 @@ package store.model.order;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static store.constants.ExceptionMessage.INPUT_MUST_CONTAIN_COMMA;
+import static store.constants.ExceptionMessage.NOT_ALLOWED_INPUT_TYPE;
 
 class OrdersTest {
     @Test
@@ -14,6 +14,6 @@ class OrdersTest {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Orders(input))
-                .withMessage(INPUT_MUST_CONTAIN_COMMA.getMessage());
+                .withMessage(NOT_ALLOWED_INPUT_TYPE.getMessage());
     }
 }

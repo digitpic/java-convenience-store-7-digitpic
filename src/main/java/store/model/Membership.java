@@ -1,8 +1,6 @@
 package store.model;
 
-import static store.constants.ExceptionMessage.INPUT_CANNOT_HAVE_FIRST_LAST_BLANK;
-import static store.constants.ExceptionMessage.INPUT_MUST_BE_UPPER_CASE;
-import static store.constants.ExceptionMessage.INPUT_MUST_BE_YES_OR_NO;
+import static store.constants.ExceptionMessage.COMMON_EXCEPTION_MESSAGE;
 
 public class Membership {
     public Membership(final String membership) {
@@ -20,7 +18,7 @@ public class Membership {
         if (membership.equals(stripped)) {
             return;
         }
-        throw new IllegalArgumentException(INPUT_CANNOT_HAVE_FIRST_LAST_BLANK.getMessage());
+        throw new IllegalArgumentException(COMMON_EXCEPTION_MESSAGE.getMessage());
     }
 
     private void validateUpperCase(final String membership) {
@@ -28,14 +26,14 @@ public class Membership {
         if (membership.equals(upperCase)) {
             return;
         }
-        throw new IllegalArgumentException(INPUT_MUST_BE_UPPER_CASE.getMessage());
+        throw new IllegalArgumentException(COMMON_EXCEPTION_MESSAGE.getMessage());
     }
 
     private void validateYesOrNo(final String membership) {
         if (isYesOrNo(membership)) {
             return;
         }
-        throw new IllegalArgumentException(INPUT_MUST_BE_YES_OR_NO.getMessage());
+        throw new IllegalArgumentException(COMMON_EXCEPTION_MESSAGE.getMessage());
     }
 
     private boolean isYesOrNo(final String membership) {

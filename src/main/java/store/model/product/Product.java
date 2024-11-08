@@ -7,6 +7,7 @@ import static store.constants.ExceptionMessage.INPUT_CANNOT_HAVE_FIRST_LAST_BLAN
 import static store.constants.ExceptionMessage.INPUT_MUST_CONTAIN_COMMA;
 import static store.constants.ExceptionMessage.INPUT_VALUE_MUST_BE_NUMERIC;
 import static store.constants.ExceptionMessage.INVALID_PRODUCT_INFORMATION_COUNT;
+import static store.constants.ExceptionMessage.NOT_ALLOWED_OVER_QUANTITY;
 
 public class Product {
     private static final int NAME_INDEX = 0;
@@ -17,7 +18,7 @@ public class Product {
 
     private final String name;
     private final int price;
-    private final int quantity;
+    private int quantity;
     private String promotion;
 
     public Product(final String information) {
@@ -34,6 +35,21 @@ public class Product {
         String quantityDisplay = makeQuantityDisplay(quantity);
         String promotionDisplay = makePromotionDisplay(promotion);
         return String.format("- %s %,d원 %s %s\n", name, price, quantityDisplay, promotionDisplay);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void decreaseQuantity(int quantity) {
+        validateOverQuantity(quantity);
+        this.quantity -= quantity;
+    }
+
+    private void validateOverQuantity(int quantity) {
+        if (this.quantity < quantity) {
+            throw new IllegalArgumentException(NOT_ALLOWED_OVER_QUANTITY.getMessage());
+        }
     }
 
     private String makeQuantityDisplay(int quantity) {

@@ -7,10 +7,10 @@ public enum ExceptionMessage {
     INVALID_PROMOTION_INFORMATION_COUNT("행사 정보는 5개의 정보가 있어야 합니다."),
     INPUT_CANNOT_HAVE_FIRST_LAST_BLANK("입력 정보의 맨 앞, 맨 뒤에는 공백이 포함 되지 않아야 합니다."),
     INPUT_VALUE_MUST_BE_NUMERIC("정수를 입력 해야 합니다."),
-    ORDER_MUST_CONTAIN_SQUARE_BRACKETS("각 상품과 수량은 대괄호 사이에 입력 되어야 합니다."),
-    ORDER_ELEMENT_MUST_SPLIT_BY_HYPHEN("상품과 수량은 하이픈으로 구분 되어야 합니다."),
-    INPUT_MUST_BE_UPPER_CASE("대문자로 입력 해야 합니다."),
-    INPUT_MUST_BE_YES_OR_NO("Y, 또는 N 이 입력 되어야 합니다");
+    NOT_FOUND_PRODUCT_NAME("존재하지 않는 상품입니다. 다시 입력해 주세요."),
+    NOT_ALLOWED_INPUT_TYPE("올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요."),
+    COMMON_EXCEPTION_MESSAGE("잘못된 입력입니다. 다시 입력해 주세요."),
+    NOT_ALLOWED_OVER_QUANTITY("재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
 
     private static final String PREFIX = "[ERROR] ";
 

@@ -5,9 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static store.constants.ExceptionMessage.INPUT_CANNOT_HAVE_FIRST_LAST_BLANK;
-import static store.constants.ExceptionMessage.INPUT_MUST_BE_UPPER_CASE;
-import static store.constants.ExceptionMessage.INPUT_MUST_BE_YES_OR_NO;
+import static store.constants.ExceptionMessage.COMMON_EXCEPTION_MESSAGE;
 
 class MembershipTest {
     @ParameterizedTest
@@ -19,7 +17,7 @@ class MembershipTest {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Membership(rawMembership))
-                .withMessage(INPUT_CANNOT_HAVE_FIRST_LAST_BLANK.getMessage());
+                .withMessage(COMMON_EXCEPTION_MESSAGE.getMessage());
     }
 
     @ParameterizedTest
@@ -31,7 +29,7 @@ class MembershipTest {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Membership(rawMembership))
-                .withMessage(INPUT_MUST_BE_UPPER_CASE.getMessage());
+                .withMessage(COMMON_EXCEPTION_MESSAGE.getMessage());
     }
 
     @Test
@@ -42,6 +40,6 @@ class MembershipTest {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Membership(rawMembership))
-                .withMessage(INPUT_MUST_BE_YES_OR_NO.getMessage());
+                .withMessage(COMMON_EXCEPTION_MESSAGE.getMessage());
     }
 }

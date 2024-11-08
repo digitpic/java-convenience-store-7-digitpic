@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static store.constants.ExceptionMessage.INPUT_VALUE_MUST_BE_NUMERIC;
-import static store.constants.ExceptionMessage.ORDER_ELEMENT_MUST_SPLIT_BY_HYPHEN;
-import static store.constants.ExceptionMessage.ORDER_MUST_CONTAIN_SQUARE_BRACKETS;
-import static store.constants.ExceptionMessage.INPUT_CANNOT_HAVE_FIRST_LAST_BLANK;
+import static store.constants.ExceptionMessage.NOT_ALLOWED_INPUT_TYPE;
 
 public class Order {
     private static final int NAME_INDEX = 0;
@@ -23,6 +20,14 @@ public class Order {
         this.quantity = Integer.parseInt(separated.get(QUANTITY_INDEX));
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
     private void validate(final String order) {
         validateSquareBrackets(order);
         validateHyphen(order);
@@ -35,7 +40,7 @@ public class Order {
             if (hasSquareBrackets(element)) {
                 return;
             }
-            throw new IllegalArgumentException(ORDER_MUST_CONTAIN_SQUARE_BRACKETS.getMessage());
+            throw new IllegalArgumentException(NOT_ALLOWED_INPUT_TYPE.getMessage());
         });
     }
 
@@ -50,7 +55,7 @@ public class Order {
             if (element.contains("-")) {
                 return;
             }
-            throw new IllegalArgumentException(ORDER_ELEMENT_MUST_SPLIT_BY_HYPHEN.getMessage());
+            throw new IllegalArgumentException(NOT_ALLOWED_INPUT_TYPE.getMessage());
         });
     }
 
@@ -81,7 +86,7 @@ public class Order {
             if (element.equals(stripped)) {
                 return;
             }
-            throw new IllegalArgumentException(INPUT_CANNOT_HAVE_FIRST_LAST_BLANK.getMessage());
+            throw new IllegalArgumentException(NOT_ALLOWED_INPUT_TYPE.getMessage());
         });
     }
 
@@ -89,7 +94,7 @@ public class Order {
         try {
             Integer.parseInt(input);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(INPUT_VALUE_MUST_BE_NUMERIC.getMessage());
+            throw new IllegalArgumentException(NOT_ALLOWED_INPUT_TYPE.getMessage());
         }
     }
 }

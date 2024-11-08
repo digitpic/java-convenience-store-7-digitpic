@@ -5,10 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static store.constants.ExceptionMessage.INPUT_VALUE_MUST_BE_NUMERIC;
-import static store.constants.ExceptionMessage.ORDER_ELEMENT_MUST_SPLIT_BY_HYPHEN;
-import static store.constants.ExceptionMessage.ORDER_MUST_CONTAIN_SQUARE_BRACKETS;
-import static store.constants.ExceptionMessage.INPUT_CANNOT_HAVE_FIRST_LAST_BLANK;
+import static store.constants.ExceptionMessage.NOT_ALLOWED_INPUT_TYPE;
 
 class OrderTest {
     @ParameterizedTest
@@ -20,7 +17,7 @@ class OrderTest {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Order(order))
-                .withMessage(ORDER_MUST_CONTAIN_SQUARE_BRACKETS.getMessage());
+                .withMessage(NOT_ALLOWED_INPUT_TYPE.getMessage());
     }
 
     @Test
@@ -31,7 +28,7 @@ class OrderTest {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Order(order))
-                .withMessage(ORDER_ELEMENT_MUST_SPLIT_BY_HYPHEN.getMessage());
+                .withMessage(NOT_ALLOWED_INPUT_TYPE.getMessage());
     }
 
     @ParameterizedTest
@@ -45,7 +42,7 @@ class OrderTest {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Order(order))
-                .withMessage(INPUT_CANNOT_HAVE_FIRST_LAST_BLANK.getMessage());
+                .withMessage(NOT_ALLOWED_INPUT_TYPE.getMessage());
     }
 
     @ParameterizedTest
@@ -57,6 +54,6 @@ class OrderTest {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Order(order))
-                .withMessage(INPUT_VALUE_MUST_BE_NUMERIC.getMessage());
+                .withMessage(NOT_ALLOWED_INPUT_TYPE.getMessage());
     }
 }

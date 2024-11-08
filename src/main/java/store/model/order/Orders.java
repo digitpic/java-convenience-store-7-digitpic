@@ -2,9 +2,10 @@ package store.model.order;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static store.constants.ExceptionMessage.INPUT_MUST_CONTAIN_COMMA;
+import static store.constants.ExceptionMessage.NOT_ALLOWED_INPUT_TYPE;
 
 public class Orders {
     private final List<Order> orders;
@@ -14,11 +15,15 @@ public class Orders {
         this.orders = parseToOrders(rawOrders);
     }
 
+    public List<Order> getOrders() {
+        return Collections.unmodifiableList(orders);
+    }
+
     private void validateComma(final String rawOrders) {
         if (rawOrders.contains(",")) {
             return;
         }
-        throw new IllegalArgumentException(INPUT_MUST_CONTAIN_COMMA.getMessage());
+        throw new IllegalArgumentException(NOT_ALLOWED_INPUT_TYPE.getMessage());
     }
 
     private List<Order> parseToOrders(String rawOrders) {

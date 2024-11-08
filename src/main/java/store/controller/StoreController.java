@@ -1,6 +1,7 @@
 package store.controller;
 
 import store.model.Membership;
+import store.model.order.Order;
 import store.model.order.Orders;
 import store.model.product.Products;
 import store.model.promotion.Promotions;
@@ -24,6 +25,7 @@ public class StoreController {
         Promotions promotions = getPromotionsInformation();
         printStockStatus(products.toString());
         Orders orders = requestOrders();
+        updateStockStatus(products, orders);
         Membership membership = requestMembership();
         String rawRestartConfirmation = requestRestartConfirmation();
     }
@@ -47,6 +49,12 @@ public class StoreController {
     private Orders requestOrders() {
         String rawOrder = inputView.requestOrder();
         return new Orders(rawOrder);
+    }
+
+    private void updateStockStatus(Products products, Orders orders) {
+        for (Order order : orders.getOrders()) {
+            products.updateStockStatus(order);
+        }
     }
 
     private Membership requestMembership() {
