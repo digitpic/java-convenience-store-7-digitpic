@@ -3,11 +3,10 @@ package store.model;
 import java.util.Arrays;
 import java.util.List;
 
+import static store.constants.ExceptionMessage.INPUT_MUST_CONTAIN_COMMA;
 import static store.constants.ExceptionMessage.INPUT_VALUE_MUST_BE_NUMERIC;
-import static store.constants.ExceptionMessage.INVALID_PRODUCT_INFORMATION_COUNT;
 import static store.constants.ExceptionMessage.INVALID_PROMOTION_INFORMATION_COUNT;
 import static store.constants.ExceptionMessage.PROMOTION_CANNOT_HAVE_FIRST_LAST_BLANK_IN_NAME;
-import static store.constants.ExceptionMessage.PROMOTION_INFORMATION_MUST_CONTAIN_COMMA;
 
 public class Promotion {
     private static final int NAME_INDEX = 0;
@@ -41,7 +40,7 @@ public class Promotion {
         if (information.contains(",")) {
             return;
         }
-        throw new IllegalArgumentException(PROMOTION_INFORMATION_MUST_CONTAIN_COMMA.getMessage());
+        throw new IllegalArgumentException(INPUT_MUST_CONTAIN_COMMA.getMessage());
     }
 
     private List<String> separateByComma(final String information) {

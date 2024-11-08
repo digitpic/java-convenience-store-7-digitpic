@@ -14,7 +14,7 @@ import static store.constants.ExceptionMessage.PROMOTION_CANNOT_HAVE_FIRST_LAST_
 
 class PromotionTest {
     @Test
-    void 행사_정보의_값이_null_인_경우_예외가_발생한다(){
+    void 행사_정보의_값이_null_인_경우_예외가_발생한다() {
         // given
         List<String> promotionsInformation = null;
 
@@ -49,7 +49,7 @@ class PromotionTest {
             "반짝할인,1,1,2024-11-01, 2024-11-30",
             "반짝할인,1,1,2024-11-01,2024-11-30 "
     })
-    void 각_요소의_맨_앞_맨_뒤에_공백이_포함_되는_경우_예외가_발생한다(String input){
+    void 각_요소의_맨_앞_맨_뒤에_공백이_포함_되는_경우_예외가_발생한다(String input) {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Promotion(input))
@@ -61,7 +61,7 @@ class PromotionTest {
             "반짝할인,1개,1,2024-11-01,2024-11-30",
             "반짝할인,1,1개,2024-11-01,2024-11-30"
     })
-    void 구매와_증정_개수에_정수가_입력_되지_않은_경우_예외가_발생한다(String input){
+    void 구매와_증정_개수에_정수가_입력_되지_않은_경우_예외가_발생한다(String input) {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Promotion(input))

@@ -3,9 +3,9 @@ package store.model;
 import java.util.Arrays;
 import java.util.List;
 
+import static store.constants.ExceptionMessage.INPUT_MUST_CONTAIN_COMMA;
 import static store.constants.ExceptionMessage.INPUT_VALUE_MUST_BE_NUMERIC;
 import static store.constants.ExceptionMessage.INVALID_PRODUCT_INFORMATION_COUNT;
-import static store.constants.ExceptionMessage.PRODUCT_INFORMATION_MUST_CONTAIN_COMMA;
 import static store.constants.ExceptionMessage.PRODUCT_CANNOT_HAVE_FIRST_LAST_BLANK_IN_NAME;
 
 public class Product {
@@ -45,7 +45,7 @@ public class Product {
         if (information.contains(",")) {
             return;
         }
-        throw new IllegalArgumentException(PRODUCT_INFORMATION_MUST_CONTAIN_COMMA.getMessage());
+        throw new IllegalArgumentException(INPUT_MUST_CONTAIN_COMMA.getMessage());
     }
 
     private List<String> separateByComma(final String information) {

@@ -6,10 +6,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static store.constants.ExceptionMessage.INPUT_MUST_CONTAIN_COMMA;
 import static store.constants.ExceptionMessage.INPUT_VALUE_MUST_BE_NUMERIC;
 import static store.constants.ExceptionMessage.INVALID_PRODUCT_INFORMATION_COUNT;
 import static store.constants.ExceptionMessage.PRODUCT_CANNOT_HAVE_FIRST_LAST_BLANK_IN_NAME;
-import static store.constants.ExceptionMessage.PRODUCT_INFORMATION_MUST_CONTAIN_COMMA;
 
 class ProductTest {
     @Test
@@ -36,7 +36,7 @@ class ProductTest {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Product(input))
-                .withMessage(PRODUCT_INFORMATION_MUST_CONTAIN_COMMA.getMessage());
+                .withMessage(INPUT_MUST_CONTAIN_COMMA.getMessage());
     }
 
     @ParameterizedTest
