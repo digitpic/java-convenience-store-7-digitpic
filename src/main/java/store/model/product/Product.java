@@ -53,18 +53,18 @@ public class Product {
         return promotion;
     }
 
-    public void decreaseQuantity(int quantity) {
+    public void decreaseQuantity(final int quantity) {
         validateOverQuantity(quantity);
         this.quantity -= quantity;
     }
 
-    private void validateOverQuantity(int quantity) {
+    private void validateOverQuantity(final int quantity) {
         if (this.quantity < quantity) {
             throw new IllegalArgumentException(NOT_ALLOWED_OVER_QUANTITY.getMessage());
         }
     }
 
-    private String makeQuantityDisplay(int quantity) {
+    private String makeQuantityDisplay(final int quantity) {
         String quantityDisplay = quantity + "개";
         if (quantity == 0) {
             quantityDisplay = "재고 없음";
@@ -72,7 +72,7 @@ public class Product {
         return quantityDisplay;
     }
 
-    private String makePromotionDisplay(String promotion) {
+    private String makePromotionDisplay(final String promotion) {
         String promotionDisplay = promotion;
         if (promotion.equals("null")) {
             promotionDisplay = "";

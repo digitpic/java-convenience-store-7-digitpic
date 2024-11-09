@@ -24,7 +24,7 @@ public class InputView {
         return Console.readLine();
     }
 
-    public String requestAddPromotionProduct(String name) {
+    public String requestAddPromotionProduct(final String name) {
         System.out.printf((REQUEST_ADD_PROMOTION_PRODUCT) + "%n", name);
         return Console.readLine();
     }

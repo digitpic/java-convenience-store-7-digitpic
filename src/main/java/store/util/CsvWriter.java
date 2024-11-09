@@ -9,7 +9,7 @@ public class CsvWriter {
     private static final String PARENT_DIRECTORY_PATH = "src/main/resources/";
     private static final String PRODUCTS_FILE_NAME = "products.md";
 
-    public static void writeCurrentStockStatus(String lines) {
+    public static void writeCurrentStockStatus(final String lines) {
         Path productsPath = Paths.get(PARENT_DIRECTORY_PATH + PRODUCTS_FILE_NAME);
         try {
             Files.writeString(productsPath, lines);

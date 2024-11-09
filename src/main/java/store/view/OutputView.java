@@ -17,11 +17,11 @@ public class OutputView {
         System.out.println(LINE_BREAK + stockStatus);
     }
 
-    public void printErrorMessage(String message) {
+    public void printErrorMessage(final String message) {
         System.out.println(message + LINE_BREAK);
     }
 
-    public void printReceipt(String message) {
+    public void printReceipt(final String message) {
         System.out.println(LINE_BREAK + message);
     }
 }

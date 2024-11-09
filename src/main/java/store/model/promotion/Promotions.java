@@ -32,15 +32,11 @@ public class Promotions {
     }
 
     private List<Promotion> parseToPromotion(final List<String> promotionsInformation) {
-        removeHeader(promotionsInformation);
+        promotionsInformation.removeFirst();
         List<Promotion> promotions = new ArrayList<>();
         for (String promotionInformation : promotionsInformation) {
             promotions.add(new Promotion(promotionInformation));
         }
         return promotions;
-    }
-
-    private void removeHeader(List<String> promotionsInformation) {
-        promotionsInformation.removeFirst();
     }
 }

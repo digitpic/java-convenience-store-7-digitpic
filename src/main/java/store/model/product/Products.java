@@ -15,7 +15,7 @@ public class Products {
 
     public Products(final List<String> productsInformation) {
         validateNull(productsInformation);
-        this.products = convertToProducts(productsInformation);
+        this.products = parseToPromotion(productsInformation);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class Products {
         }
     }
 
-    private List<Product> convertToProducts(final List<String> productsInformation) {
+    private List<Product> parseToPromotion(final List<String> productsInformation) {
         productsInformation.removeFirst();
         List<String> updatedProductInformation = new ArrayList<>();
         Set<String> processedProductNames = new HashSet<>();
@@ -63,7 +63,7 @@ public class Products {
         return mapToProducts(updatedProductInformation);
     }
 
-    private void handleProductLine(String line, List<String> updatedProductInformation,
+    private void handleProductLine(final String line, final List<String> updatedProductInformation,
                                    Set<String> processedProductNames, List<String> productsInformation) {
         String[] productData = line.split(",");
         String name = productData[0], price = productData[1], promotion = productData[3];
@@ -77,18 +77,18 @@ public class Products {
         updatedProductInformation.add(line);
     }
 
-    private boolean shouldAddDefaultStock(String name, String price, String promotion,
-                                          List<String> productsInformation, Set<String> processedProductNames) {
+    private boolean shouldAddDefaultStock(final String name, final String price, final String promotion,
+                                          final List<String> productsInformation, final Set<String> processedProductNames) {
         return !promotion.equals("null") && !processedProductNames.contains(name) && !hasDefaultStock(name, price, productsInformation);
     }
 
-    private boolean hasDefaultStock(String name, String price, List<String> productsInformation) {
+    private boolean hasDefaultStock(final String name, final String price, final List<String> productsInformation) {
         return productsInformation.stream()
                 .filter(product -> product.startsWith(name + "," + price))
                 .count() > 1;
     }
 
-    private List<Product> mapToProducts(List<String> updatedProductInformation) {
+    private List<Product> mapToProducts(final List<String> updatedProductInformation) {
         List<Product> products = new ArrayList<>();
         updatedProductInformation.forEach(line -> products.add(new Product(line)));
         return products;

@@ -20,7 +20,7 @@ public class Orders {
         this.orders = parseToOrders(rawOrders);
     }
 
-    public int calculateOriginalPrice(Products products) {
+    public int calculateOriginalPrice(final Products products) {
         int total = 0;
         for (Order order : orders) {
             Product product = products.findByName(order.getName());
@@ -29,7 +29,7 @@ public class Orders {
         return total;
     }
 
-    public int calculatePromotionDiscount(Products products, Promotions promotions) {
+    public int calculatePromotionDiscount(final Products products, final Promotions promotions) {
         int discount = 0;
         for (Order order : orders) {
             Product product = products.findByName(order.getName());
@@ -49,7 +49,7 @@ public class Orders {
         return discount;
     }
 
-    public int calculateMembershipDiscount(Products products, Membership membership) {
+    public int calculateMembershipDiscount(final Products products, final Membership membership) {
         int total = calculateOriginalPrice(products);
         int discount = 0;
         if (membership.isMember()) {
@@ -61,7 +61,7 @@ public class Orders {
         return discount;
     }
 
-    public String makeReceipt(Products products, Promotions promotions, Membership membership) {
+    public String makeReceipt(final Products products, final Promotions promotions, final Membership membership) {
         int originalPrice = calculateOriginalPrice(products);
         int promotionDiscount = calculatePromotionDiscount(products, promotions);
         int membershipDiscount = 0;
@@ -94,7 +94,7 @@ public class Orders {
         return total;
     }
 
-    private List<Order> parseToOrders(String rawOrders) {
+    private List<Order> parseToOrders(final String rawOrders) {
         List<Order> orders = new ArrayList<>();
         List<String> separated = Arrays.stream(rawOrders.split(","))
                 .toList();
