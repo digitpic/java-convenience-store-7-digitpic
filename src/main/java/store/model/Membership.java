@@ -3,6 +3,8 @@ package store.model;
 import static store.constants.ExceptionMessage.COMMON_EXCEPTION_MESSAGE;
 
 public class Membership {
+    private boolean isMember;
+
     public Membership(final String membership) {
         validate(membership);
     }
@@ -11,6 +13,16 @@ public class Membership {
         validateStrip(membership);
         validateUpperCase(membership);
         validateYesOrNo(membership);
+        if (membership.equals("Y")) {
+            this.isMember = true;
+        }
+        if (membership.equals("N")) {
+            this.isMember = false;
+        }
+    }
+
+    public boolean isMember() {
+        return this.isMember;
     }
 
     private void validateStrip(final String membership) {

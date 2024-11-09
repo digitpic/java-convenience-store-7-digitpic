@@ -11,13 +11,17 @@ public class Order {
     private static final int QUANTITY_INDEX = 1;
 
     private final String name;
-    private final int quantity;
+    private int quantity;
 
     public Order(final String order) {
         validate(order);
         List<String> separated = separateByHyphen(order);
         this.name = separated.get(NAME_INDEX);
         this.quantity = Integer.parseInt(separated.get(QUANTITY_INDEX));
+    }
+
+    public void increaseQuantity() {
+        quantity++;
     }
 
     public String getName() {

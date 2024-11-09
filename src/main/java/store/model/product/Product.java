@@ -41,6 +41,18 @@ public class Product {
         return name;
     }
 
+    public int getPrice() {
+        return price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public String getPromotion() {
+        return promotion;
+    }
+
     public void decreaseQuantity(int quantity) {
         validateOverQuantity(quantity);
         this.quantity -= quantity;
@@ -112,5 +124,12 @@ public class Product {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(INPUT_VALUE_MUST_BE_NUMERIC.getMessage());
         }
+    }
+
+    public String makeCsv() {
+        if (quantity == 0 && promotion.equals("null")) {
+            return "";
+        }
+        return String.format("%s,%s,%s,%s\n", name, price, quantity, promotion);
     }
 }

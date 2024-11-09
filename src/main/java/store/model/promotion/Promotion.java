@@ -34,6 +34,26 @@ public class Promotion {
         this.endDate = LocalDate.parse(separated.get(EVENT_END_DATE_INDEX)).atTime(23, 59, 59);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getBuyCount() {
+        return buyCount;
+    }
+
+    public int getGetCount() {
+        return getCount;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
     private void validate(final String information) {
         validateComma(information);
     }

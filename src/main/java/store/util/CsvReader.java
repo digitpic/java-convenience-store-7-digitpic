@@ -10,7 +10,7 @@ public class CsvReader {
     private static final String PARENT_DIRECTORY_PATH = "src/main/resources/";
     private static final String PRODUCTS_FILE_NAME = "products.md";
     private static final String PROMOTIONS_FILE_NAME = "promotions.md";
-    
+
     public static List<String> getProductsData() {
         Path productsPath = Paths.get(PARENT_DIRECTORY_PATH + PRODUCTS_FILE_NAME);
         try {

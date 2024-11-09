@@ -6,7 +6,7 @@ public class OutputView {
     private static final String LINE_BREAK = "\n";
 
     public void printGreetingMessage() {
-        System.out.println(GREETING_MESSAGE);
+        System.out.println(LINE_BREAK + GREETING_MESSAGE);
     }
 
     public void printStockStatusHeader() {
@@ -19,5 +19,9 @@ public class OutputView {
 
     public void printErrorMessage(String message) {
         System.out.println(message + LINE_BREAK);
+    }
+
+    public void printReceipt(String message) {
+        System.out.println(LINE_BREAK + message);
     }
 }
