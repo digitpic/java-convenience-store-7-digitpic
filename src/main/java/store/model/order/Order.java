@@ -12,6 +12,7 @@ public class Order {
 
     private final String name;
     private int quantity;
+    public boolean more = true;
 
     public Order(final String order) {
         validate(order);

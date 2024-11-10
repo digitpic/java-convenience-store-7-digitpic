@@ -41,7 +41,7 @@ public class Products {
 
     public String makeCsv() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("name,price,quantity,promotion");
+        stringBuilder.append("name,price,quantity,promotion\n");
         for (Product product : products) {
             stringBuilder.append(product.makeCsv());
         }

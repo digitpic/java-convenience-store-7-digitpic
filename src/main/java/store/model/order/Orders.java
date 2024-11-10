@@ -20,11 +20,18 @@ public class Orders {
         this.orders = parseToOrders(rawOrders);
     }
 
-    public int calculateOriginalPrice(final Products products) {
+    public int calculateOriginalPrice(final Products products, final Promotions promotions) {
         int total = 0;
+        LocalDateTime now = DateTimes.now();
         for (Order order : orders) {
             Product product = products.findByName(order.getName());
+            Promotion promotion = promotions.findByName(product.getPromotion());
             total += product.getPrice() * order.getQuantity();
+            if (promotion != null && order.more && (now.isAfter(promotion.getStartDate()) && now.isBefore(promotion.getEndDate()))) {
+                if (promotion.getBuyCount() == order.getQuantity()) {
+                    total += product.getPrice() * promotion.getGetCount();
+                }
+            }
         }
         return total;
     }
@@ -35,22 +42,31 @@ public class Orders {
             Product product = products.findByName(order.getName());
             Promotion promotion = promotions.findByName(product.getPromotion());
             LocalDateTime now = DateTimes.now();
-            if (promotion != null) {
-                discount += product.getPrice() * promotion.getGetCount();
+            if (promotion != null && order.more) {
+                if (order.getQuantity() == promotion.getBuyCount()) {
+                    discount += product.getPrice() * promotion.getGetCount();
+                }
             }
             if (promotion == null) {
                 discount = 0;
                 continue;
             }
-            if (promotion.getStartDate().isBefore(now) || promotion.getEndDate().isAfter(now)) {
+            if (now.isAfter(promotion.getEndDate()) || now.isBefore(promotion.getStartDate())) {
                 discount = 0;
             }
         }
         return discount;
     }
 
-    public int calculateMembershipDiscount(final Products products, final Membership membership) {
-        int total = calculateOriginalPrice(products);
+    public int calculateMembershipDiscount(final Products products, final Promotions promotions, final Membership membership) {
+        int total = 0;
+        for (Order order : orders) {
+            Product product = products.findByName(order.getName());
+            Promotion promotion = promotions.findByName(product.getPromotion());
+            if (promotion == null) {
+                total += product.getPrice() * order.getQuantity();
+            }
+        }
         int discount = 0;
         if (membership.isMember()) {
             discount = (int) (total * 0.3);
@@ -62,36 +78,61 @@ public class Orders {
     }
 
     public String makeReceipt(final Products products, final Promotions promotions, final Membership membership) {
-        int originalPrice = calculateOriginalPrice(products);
+        int originalPrice = calculateOriginalPrice(products, promotions);
         int promotionDiscount = calculatePromotionDiscount(products, promotions);
+        int totalCount = 0;
+        for (Order order : orders) {
+            totalCount += order.getQuantity();
+            Product product = products.findByName(order.getName());
+            Promotion promotion = promotions.findByName(product.getPromotion());
+            if (promotion != null && order.more) {
+                totalCount += promotion.getGetCount();
+            }
+        }
         int membershipDiscount = 0;
         if (membership.isMember()) {
-            membershipDiscount = calculateMembershipDiscount(products, membership);
+            membershipDiscount = calculateMembershipDiscount(products, promotions, membership);
         }
         int payment = originalPrice - promotionDiscount - membershipDiscount;
 
+        return makeString(products, promotions, originalPrice, totalCount, promotionDiscount, membershipDiscount, payment);
+    }
+
+    private String makeString(final Products products, final Promotions promotions, final int originalPrice, final int totalCount, final int promotionDiscount, final int membershipDiscount, final int payment) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("==============W 편의점================\n");
         stringBuilder.append("상품명\t\t수량\t금액\n");
+        for (Order order : orders) {
+            Product product = products.findByName(order.getName());
+            Promotion promotion = promotions.findByName(product.getPromotion());
+            if (promotion != null && order.more) {
+                stringBuilder.append(String.format("%s\t\t%d\t%,d\n", order.getName(), order.getQuantity() + promotion.getGetCount(),
+                        (order.getQuantity() + promotion.getGetCount()) * product.getPrice()));
+            }
+            if (promotion != null && !order.more) {
+                stringBuilder.append(String.format("%s\t\t%d\t%,d\n", order.getName(), order.getQuantity(),
+                        order.getQuantity() * product.getPrice()));
+            }
+        }
         stringBuilder.append("=============증\t정===============\n");
+        for (Order order : orders) {
+            Product product = products.findByName(order.getName());
+            Promotion promotion = promotions.findByName(product.getPromotion());
+            if (promotion != null && order.more) {
+                stringBuilder.append(order.getName()).append("\t\t").append(promotion.getGetCount())
+                        .append("\t").append("\n");
+            }
+        }
         stringBuilder.append("====================================\n");
-        stringBuilder.append(String.format("총구매액\t\t%d\t%d\n", totalOrderCount(), originalPrice));
-        stringBuilder.append(String.format("행사할인\t\t \t%,d\n", -Math.abs(promotionDiscount)));
-        stringBuilder.append(String.format("멤버십할인\t\t \t%,d\n", -Math.abs(membershipDiscount)));
+        stringBuilder.append(String.format("총구매액\t\t%d\t%,d\n", totalCount, originalPrice));
+        stringBuilder.append(String.format("행사할인\t\t \t%,d\n", -promotionDiscount));
+        stringBuilder.append(String.format("멤버십할인\t\t \t%,d\n", -membershipDiscount));
         stringBuilder.append(String.format("내실돈\t\t \t%,d", payment));
         return stringBuilder.toString();
     }
 
     public List<Order> getOrders() {
         return Collections.unmodifiableList(orders);
-    }
-
-    private int totalOrderCount() {
-        int total = 0;
-        for (Order order : orders) {
-            total += order.getQuantity();
-        }
-        return total;
     }
 
     private List<Order> parseToOrders(final String rawOrders) {

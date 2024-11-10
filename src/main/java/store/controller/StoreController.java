@@ -1,6 +1,8 @@
 package store.controller;
 
 import store.model.Membership;
+import store.model.More;
+import store.model.Restart;
 import store.model.order.Order;
 import store.model.order.Orders;
 import store.model.product.Product;
@@ -35,8 +37,8 @@ public class StoreController {
             Membership membership = requestMembership();
             printReceipt(orders.makeReceipt(products, promotions, membership));
             updateStockStatus(products, orders);
-            String rawRestartConfirmation = requestRestartConfirmation();
-            if (rawRestartConfirmation.equals("N")) {
+            Restart restart = requestRestartConfirmation();
+            if (!restart.getIsRestart()) {
                 // writeStockStatus(products);
                 break;
             }
@@ -75,22 +77,62 @@ public class StoreController {
     }
 
     private void checkQuantityForPromotion(final Products products, final Promotions promotions, final Orders orders) {
-        // 프로모션 적용이 가능한 상품에 대해 고객이 해당 수량보다 적게 가져온 경우, 그 수량만큼 추가 여부를 입력받는다.
         for (Order order : orders.getOrders()) {
             Product product = products.findByName(order.getName());
             Promotion promotion = promotions.findByName(product.getPromotion());
-            if (promotion != null && promotion.getBuyCount() > order.getQuantity()) {
-                String answer = inputView.requestAddPromotionProduct(order.getName());
-                if (answer.equals("Y")) {
-                    order.increaseQuantity();
-                }
+            requestMoreProduct(promotion, order);
+        }
+    }
+
+    private void requestMoreProduct(final Promotion promotion, final Order order) {
+        if (promotion != null && promotion.getBuyCount() == order.getQuantity()) {
+            More more = requestValidMoreProduct(order);
+            if (!more.getMore()) {
+                order.more = false;
             }
         }
     }
 
-    private void checkNoPromotionStock(final Products products, final Promotions promotions, final Orders orders) {
-        // 프로모션 재고가 부족하여 일부 수량을 프로모션 혜택 없이 결제해야 하는 경우, 일부 수량에 대해 정가로 결제할지 여부를 입력받는다.
+    private More requestValidMoreProduct(final Order order) {
+        return getValidInput(() -> {
+            String rawMore = inputView.requestAddPromotionProduct(order.getName());
+            return new More(rawMore);
+        });
+    }
 
+    private void checkNoPromotionStock(final Products products, final Promotions promotions, final Orders orders) {
+        for (Order order : orders.getOrders()) {
+            Product product = products.findByName(order.getName());
+            Promotion promotion = promotions.findByName(product.getPromotion());
+            if (promotion != null) {
+                int promotionStockRequired = calculateRequiredPromotionStock(order, promotion);
+                checkPromotionStock(order, promotionStockRequired, product);
+            }
+        }
+    }
+
+    private void checkPromotionStock(final Order order, final int promotionStockRequired, final Product product) {
+        if (promotionStockRequired > product.getQuantity()) {
+            int insufficientQuantity = promotionStockRequired - product.getQuantity();
+            processInsufficientStockCase(order, insufficientQuantity);
+        }
+    }
+
+    private int calculateRequiredPromotionStock(Order order, Promotion promotion) {
+        return (order.getQuantity() / promotion.getBuyCount()) * promotion.getGetCount();
+    }
+
+    private void processInsufficientStockCase(Order order, int insufficientQuantity) {
+        String answer = inputView.requestFullPricePayment(order.getName(), insufficientQuantity);
+        if (answer.equals("Y")) {
+            addFullPriceQuantity(order, insufficientQuantity);
+        }
+    }
+
+    private void addFullPriceQuantity(Order order, int insufficientQuantity) {
+        for (int i = 0; i < insufficientQuantity; i++) {
+            order.increaseQuantity();
+        }
     }
 
     private void checkValidCount(final Products products, final Orders orders) {
@@ -115,8 +157,11 @@ public class StoreController {
         });
     }
 
-    private String requestRestartConfirmation() {
-        return inputView.requestRestartConfirmation();
+    private Restart requestRestartConfirmation() {
+        return getValidInput(() -> {
+            String rawRestart = inputView.requestRestartConfirmation();
+            return new Restart(rawRestart);
+        });
     }
 
     private <T> T getValidInput(final Supplier<T> inputSupplier) {
