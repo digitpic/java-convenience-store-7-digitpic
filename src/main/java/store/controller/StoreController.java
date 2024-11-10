@@ -85,11 +85,20 @@ public class StoreController {
     }
 
     private void confirmAddPromotionProduct(final Promotion promotion, final Order order) {
-        if (promotion != null && promotion.getBuyCount() == order.getQuantity()) {
-            More more = requestAddPromotionProductConfirmation(order);
-            if (!more.getMore()) {
-                order.more = false;
+        if (promotion != null) {
+            if (promotion.getBuyCount() == 1 && order.getQuantity() % 2 != 0) {
+                confirm(order);
             }
+            if (promotion.getBuyCount() == 2 && (order.getQuantity() - 2) % 3 == 0 && order.getQuantity() >= 2) {
+                confirm(order);
+            }
+        }
+    }
+
+    private void confirm(final Order order) {
+        More more = requestAddPromotionProductConfirmation(order);
+        if (!more.getMore()) {
+            order.more = false;
         }
     }
 
