@@ -80,20 +80,20 @@ public class StoreController {
         for (Order order : orders.getOrders()) {
             Product product = products.findByName(order.getName());
             Promotion promotion = promotions.findByName(product.getPromotion());
-            requestMoreProduct(promotion, order);
+            confirmAddPromotionProduct(promotion, order);
         }
     }
 
-    private void requestMoreProduct(final Promotion promotion, final Order order) {
+    private void confirmAddPromotionProduct(final Promotion promotion, final Order order) {
         if (promotion != null && promotion.getBuyCount() == order.getQuantity()) {
-            More more = requestValidMoreProduct(order);
+            More more = requestAddPromotionProductConfirmation(order);
             if (!more.getMore()) {
                 order.more = false;
             }
         }
     }
 
-    private More requestValidMoreProduct(final Order order) {
+    private More requestAddPromotionProductConfirmation(final Order order) {
         return getValidInput(() -> {
             String rawMore = inputView.requestAddPromotionProduct(order.getName());
             return new More(rawMore);
@@ -111,15 +111,18 @@ public class StoreController {
         }
     }
 
-    private void checkPromotionStock(final Order order, final int promotionStockRequired, final Product product) {
-        if (promotionStockRequired > product.getQuantity()) {
-            int insufficientQuantity = promotionStockRequired - product.getQuantity();
-            processInsufficientStockCase(order, insufficientQuantity);
+    private int calculateRequiredPromotionStock(Order order, Promotion promotion) {
+        if (order.getQuantity() % (promotion.getBuyCount() + promotion.getGetCount()) == 0) {
+            return 0;
         }
+        return (order.getQuantity() / promotion.getBuyCount()) * promotion.getGetCount();
     }
 
-    private int calculateRequiredPromotionStock(Order order, Promotion promotion) {
-        return (order.getQuantity() / promotion.getBuyCount()) * promotion.getGetCount();
+    private void checkPromotionStock(final Order order, final int promotionStockRequired, final Product product) {
+        if (order.getQuantity() + promotionStockRequired > product.getQuantity()) {
+            int insufficientQuantity = Math.abs(promotionStockRequired - product.getQuantity());
+            processInsufficientStockCase(order, insufficientQuantity);
+        }
     }
 
     private void processInsufficientStockCase(Order order, int insufficientQuantity) {

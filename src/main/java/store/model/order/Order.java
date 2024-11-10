@@ -83,6 +83,7 @@ public class Order {
     private void validateAfterSeparate(final List<String> separated) {
         validateStrip(separated);
         validateNumeric(separated.get(QUANTITY_INDEX));
+        validateZero(separated.get(QUANTITY_INDEX));
     }
 
     private void validateStrip(final List<String> separated) {
@@ -99,6 +100,13 @@ public class Order {
         try {
             Integer.parseInt(input);
         } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(NOT_ALLOWED_INPUT_TYPE.getMessage());
+        }
+    }
+
+    private void validateZero(final String s) {
+        int quantity = Integer.parseInt(s);
+        if (quantity == 0) {
             throw new IllegalArgumentException(NOT_ALLOWED_INPUT_TYPE.getMessage());
         }
     }

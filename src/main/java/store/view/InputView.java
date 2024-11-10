@@ -31,7 +31,7 @@ public class InputView {
     }
 
     public String requestFullPricePayment(final String name, final int insufficientQuantity) {
-        System.out.printf(REQUEST_FULL_PRICE_PAYMENT + "%n", name, insufficientQuantity);
+        System.out.printf(LINE_BREAK + REQUEST_FULL_PRICE_PAYMENT + "%n", name, insufficientQuantity);
         return Console.readLine();
     }
 }

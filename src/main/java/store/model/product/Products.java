@@ -11,6 +11,10 @@ import static store.constants.ExceptionMessage.ERROR_WITH_OPENING_CSV_FILE;
 import static store.constants.ExceptionMessage.NOT_FOUND_PRODUCT_NAME;
 
 public class Products {
+    private static final int NAME_INDEX = 0;
+    private static final int PRICE_INDEX = 1;
+    private static final int PROMOTION_INDEX = 3;
+
     private List<Product> products;
 
     public Products(final List<String> productsInformation) {
@@ -66,7 +70,9 @@ public class Products {
     private void handleProductLine(final String line, final List<String> updatedProductInformation,
                                    Set<String> processedProductNames, List<String> productsInformation) {
         String[] productData = line.split(",");
-        String name = productData[0], price = productData[1], promotion = productData[3];
+        String name = productData[NAME_INDEX];
+        String price = productData[PRICE_INDEX];
+        String promotion = productData[PROMOTION_INDEX];
 
         if (shouldAddDefaultStock(name, price, promotion, productsInformation, processedProductNames)) {
             updatedProductInformation.add(line);
