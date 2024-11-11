@@ -1,5 +1,6 @@
 package store.controller;
 
+import store.model.CommonStock;
 import store.model.Membership;
 import store.model.More;
 import store.model.Restart;
@@ -135,21 +136,24 @@ public class StoreController {
             int groupCount = product.getQuantity() / (promotion.getBuyCount() + promotion.getGetCount());
             int coveredCount = groupCount * (promotion.getBuyCount() + promotion.getGetCount());
             int insufficientQuantity = promotionStockRequired - coveredCount;
-            processInsufficientStockCase(products, product, order, insufficientQuantity);
+            processInsufficientStockCase(products, order, insufficientQuantity);
         }
     }
 
-    private void processInsufficientStockCase(final Products products, final Product product, final Order order, final int insufficientQuantity) {
-        boolean canReplace = checkCommonStock(products, product, order);
+    private void processInsufficientStockCase(final Products products, final Order order, final int insufficientQuantity) {
+        boolean canReplace = checkCommonStock(products, order);
         if (canReplace) {
-            String answer = inputView.requestFullPricePayment(order.getName(), insufficientQuantity);
-            if (answer.equals("Y")) {
+            CommonStock commonStock = getValidInput(() -> {
+                String rawCommonStock = inputView.requestFullPricePayment(order.getName(), insufficientQuantity);
+                return new CommonStock(rawCommonStock);
+            });
+            if (commonStock.getCommonStock()) {
                 addFullPriceQuantity(order, insufficientQuantity);
             }
         }
     }
 
-    private boolean checkCommonStock(final Products products, final Product product, final Order order) {
+    private boolean checkCommonStock(final Products products, final Order order) {
         Product second = products.findByNameSecond(order.getName());
         return second.getQuantity() >= order.getQuantity();
     }

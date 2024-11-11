@@ -7,13 +7,13 @@ public class Membership {
 
     public Membership(final String membership) {
         validate(membership);
+        setField(membership);
     }
 
     private void validate(final String membership) {
         validateStrip(membership);
         validateUpperCase(membership);
         validateYesOrNo(membership);
-        setField(membership);
     }
 
     private void setField(final String membership) {
