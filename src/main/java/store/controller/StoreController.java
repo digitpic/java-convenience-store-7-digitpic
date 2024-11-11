@@ -115,30 +115,39 @@ public class StoreController {
             Promotion promotion = promotions.findByName(product.getPromotion());
             if (promotion != null) {
                 int promotionStockRequired = calculateRequiredPromotionStock(order, promotion);
-                checkPromotionStock(order, promotionStockRequired, product);
+                checkPromotionStock(products, order, promotionStockRequired, product);
             }
         }
     }
 
     private int calculateRequiredPromotionStock(Order order, Promotion promotion) {
-        if (order.getQuantity() % (promotion.getBuyCount() + promotion.getGetCount()) == 0) {
-            return 0;
+        int stock = order.getQuantity();
+        if (order.more) {
+            stock += promotion.getGetCount();
         }
-        return (order.getQuantity() / promotion.getBuyCount()) * promotion.getGetCount();
+        return stock;
     }
 
-    private void checkPromotionStock(final Order order, final int promotionStockRequired, final Product product) {
-        if (order.getQuantity() + promotionStockRequired > product.getQuantity()) {
-            int insufficientQuantity = Math.abs(promotionStockRequired - product.getQuantity());
-            processInsufficientStockCase(order, insufficientQuantity);
+    private void checkPromotionStock(final Products products, final Order order, final int promotionStockRequired, final Product product) {
+        if (promotionStockRequired > product.getQuantity()) {
+            int insufficientQuantity = promotionStockRequired - product.getQuantity();
+            processInsufficientStockCase(products, product, order, insufficientQuantity);
         }
     }
 
-    private void processInsufficientStockCase(Order order, int insufficientQuantity) {
-        String answer = inputView.requestFullPricePayment(order.getName(), insufficientQuantity);
-        if (answer.equals("Y")) {
-            addFullPriceQuantity(order, insufficientQuantity);
+    private void processInsufficientStockCase(final Products products, final Product product, final Order order, final int insufficientQuantity) {
+        boolean canReplace = checkCommonStock(products, product, order);
+        if (canReplace) {
+            String answer = inputView.requestFullPricePayment(order.getName(), insufficientQuantity);
+            if (answer.equals("Y")) {
+                addFullPriceQuantity(order, insufficientQuantity);
+            }
         }
+    }
+
+    private boolean checkCommonStock(final Products products, final Product product, final Order order) {
+        Product second = products.findByNameSecond(order.getName());
+        return second.getQuantity() >= order.getQuantity();
     }
 
     private void addFullPriceQuantity(Order order, int insufficientQuantity) {
@@ -150,7 +159,8 @@ public class StoreController {
     private void checkValidCount(final Products products, final Orders orders) {
         for (Order order : orders.getOrders()) {
             Product product = products.findByName(order.getName());
-            if (product.getQuantity() < order.getQuantity()) {
+            Product second = products.findByNameSecond(order.getName());
+            if (product.getQuantity() < order.getQuantity() && second.getQuantity() < order.getQuantity()) {
                 throw new IllegalArgumentException(NOT_ALLOWED_OVER_QUANTITY.getMessage());
             }
         }

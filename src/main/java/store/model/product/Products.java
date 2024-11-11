@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 import static store.constants.ExceptionMessage.ERROR_WITH_OPENING_CSV_FILE;
-import static store.constants.ExceptionMessage.NOT_FOUND_PRODUCT_NAME;
 
 public class Products {
     private static final int NAME_INDEX = 0;
@@ -37,10 +36,17 @@ public class Products {
     }
 
     public Product findByName(final String name) {
-        return products.stream()
+        List<Product> selected = products.stream()
                 .filter((product) -> product.getName().equals(name))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_PRODUCT_NAME.getMessage()));
+                .toList();
+        return selected.getFirst();
+    }
+
+    public Product findByNameSecond(final String name) {
+        List<Product> selected = products.stream()
+                .filter((product) -> product.getName().equals(name))
+                .toList();
+        return selected.getLast();
     }
 
     public String makeCsv() {
