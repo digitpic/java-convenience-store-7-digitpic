@@ -11,8 +11,8 @@ public class Order {
     private static final int QUANTITY_INDEX = 1;
 
     private final String name;
-    private int quantity;
     public boolean more = true;
+    private int quantity;
 
     public Order(final String order) {
         validate(order);
@@ -39,8 +39,7 @@ public class Order {
     }
 
     private void validateSquareBrackets(final String order) {
-        List<String> separated = Arrays.stream(order.split(","))
-                .toList();
+        List<String> separated = Arrays.stream(order.split(",")).toList();
         separated.forEach((element) -> {
             if (hasSquareBrackets(element)) {
                 return;
@@ -54,8 +53,7 @@ public class Order {
     }
 
     private void validateHyphen(final String order) {
-        List<String> separated = Arrays.stream(order.split(","))
-                .toList();
+        List<String> separated = Arrays.stream(order.split(",")).toList();
         separated.forEach((element) -> {
             if (element.contains("-")) {
                 return;
@@ -74,8 +72,7 @@ public class Order {
     private void removeSquareBracket(final List<String> separated) {
         for (int i = 0; i < separated.size(); i++) {
             String element = separated.get(i);
-            element = element.replace("[", "")
-                    .replace("]", "");
+            element = element.replace("[", "").replace("]", "");
             separated.set(i, element);
         }
     }

@@ -7,6 +7,10 @@ public class Restart {
 
     public Restart(String restart) {
         validate(restart);
+        setField(restart);
+    }
+
+    private void setField(final String restart) {
         if (restart.equals("Y")) {
             this.isRestart = true;
         }

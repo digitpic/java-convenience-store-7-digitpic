@@ -7,6 +7,10 @@ public class More {
 
     public More(String rawMore) {
         validate(rawMore);
+        setField(rawMore);
+    }
+
+    private void setField(final String rawMore) {
         if (rawMore.equals("Y")) {
             this.more = true;
         }

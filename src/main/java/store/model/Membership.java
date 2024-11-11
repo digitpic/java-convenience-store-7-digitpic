@@ -13,6 +13,10 @@ public class Membership {
         validateStrip(membership);
         validateUpperCase(membership);
         validateYesOrNo(membership);
+        setField(membership);
+    }
+
+    private void setField(final String membership) {
         if (membership.equals("Y")) {
             this.isMember = true;
         }

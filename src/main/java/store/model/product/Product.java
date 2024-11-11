@@ -88,8 +88,7 @@ public class Product {
     }
 
     private List<String> separateByComma(final String information) {
-        List<String> separated = Arrays.stream(information.split(","))
-                .toList();
+        List<String> separated = Arrays.stream(information.split(",")).toList();
         validateAfterSeparate(separated);
         return separated;
     }

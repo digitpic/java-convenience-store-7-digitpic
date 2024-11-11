@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static store.constants.ExceptionMessage.ERROR_WITH_OPENING_CSV_FILE;
-import static store.constants.ExceptionMessage.NOT_FOUND_PRODUCT_NAME;
 
 public class Promotions {
     private final List<Promotion> promotions;

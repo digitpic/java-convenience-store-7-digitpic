@@ -68,13 +68,12 @@ public class Products {
         productsInformation.removeFirst();
         List<String> updatedProductInformation = new ArrayList<>();
         Set<String> processedProductNames = new HashSet<>();
-
         productsInformation.forEach(line -> handleProductLine(line, updatedProductInformation, processedProductNames, productsInformation));
         return mapToProducts(updatedProductInformation);
     }
 
     private void handleProductLine(final String line, final List<String> updatedProductInformation,
-                                   Set<String> processedProductNames, List<String> productsInformation) {
+                                   final Set<String> processedProductNames, final List<String> productsInformation) {
         String[] productData = line.split(",");
         String name = productData[NAME_INDEX];
         String price = productData[PRICE_INDEX];

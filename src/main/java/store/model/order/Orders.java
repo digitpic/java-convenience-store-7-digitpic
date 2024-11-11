@@ -14,23 +14,25 @@ import java.util.Collections;
 import java.util.List;
 
 public class Orders {
+    public static final int MAX_MEMBERSHIP_DISCOUNT = 8000;
+    public static final double MEMBERSHIP_DISCOUNT_RATE = 0.3;
     private final List<Order> orders;
 
     public Orders(final String rawOrders) {
         this.orders = parseToOrders(rawOrders);
     }
 
-    public int calculateOriginalPrice(final Products products, final Promotions promotions) {
+    public int calculateTotalPrice(final Products products, final Promotions promotions) {
         int total = 0;
         LocalDateTime now = DateTimes.now();
         for (Order order : orders) {
             Product product = products.findByName(order.getName());
             Promotion promotion = promotions.findByName(product.getPromotion());
             total += product.getPrice() * order.getQuantity();
-            if (promotion != null && order.more && now.isAfter(promotion.getStartDate()) && now.isBefore(promotion.getEndDate())
-                    && order.getQuantity() % (promotion.getBuyCount() + promotion.getGetCount()) != 0
-                    && order.getQuantity() > (promotion.getBuyCount() + promotion.getGetCount())) {
-                total += product.getPrice() * promotion.getGetCount();
+            if (promotion != null && now.isAfter(promotion.getStartDate()) && now.isBefore(promotion.getEndDate())) {
+                if (order.more && order.getQuantity() >= promotion.getBuyCount()) {
+                    total += product.getPrice() * promotion.getGetCount();
+                }
             }
         }
         return total;
@@ -38,68 +40,65 @@ public class Orders {
 
     public int calculatePromotionDiscount(final Products products, final Promotions promotions) {
         int discount = 0;
+        LocalDateTime now = DateTimes.now();
         for (Order order : orders) {
             Product product = products.findByName(order.getName());
             Promotion promotion = promotions.findByName(product.getPromotion());
-            LocalDateTime now = DateTimes.now();
-            if (promotion != null && order.more && now.isAfter(promotion.getStartDate()) && now.isBefore(promotion.getEndDate())) {
-                int repeat = order.getQuantity() / (promotion.getBuyCount() + promotion.getGetCount());
-                for (int i = 0; i < repeat; i++) {
-                    discount += product.getPrice() * promotion.getGetCount();
+            if (promotion != null && now.isAfter(promotion.getStartDate()) && now.isBefore(promotion.getEndDate())) {
+                if (promotion.getBuyCount() == 1 && order.getQuantity() >= 2) {
+                    discount += order.getQuantity() / 2 * product.getPrice();
                 }
-            }
-            if (promotion == null) {
-                discount += 0;
+                if (promotion.getBuyCount() == 2 && order.getQuantity() >= 3) {
+                    discount += order.getQuantity() / 3 * product.getPrice();
+                }
             }
         }
         return discount;
     }
 
     public int calculateMembershipDiscount(final Products products, final Promotions promotions, final Membership membership) {
-        int total = 0;
+        int commonStockTotal = 0;
         for (Order order : orders) {
             Product product = products.findByName(order.getName());
             Promotion promotion = promotions.findByName(product.getPromotion());
             if (promotion == null) {
-                total += product.getPrice() * order.getQuantity();
+                commonStockTotal += product.getPrice() * order.getQuantity();
             }
         }
         int discount = 0;
         if (membership.isMember()) {
-            discount = (int) (total * 0.3);
+            discount = (int) (commonStockTotal * MEMBERSHIP_DISCOUNT_RATE);
         }
-        if (discount > 8000) {
-            discount = 8000;
+        if (discount > MAX_MEMBERSHIP_DISCOUNT) {
+            discount = MAX_MEMBERSHIP_DISCOUNT;
         }
         return discount;
     }
 
     public String makeReceipt(final Products products, final Promotions promotions, final Membership membership) {
-        int originalPrice = calculateOriginalPrice(products, promotions);
+        LocalDateTime now = DateTimes.now();
+        int totalPrice = calculateTotalPrice(products, promotions);
         int promotionDiscount = calculatePromotionDiscount(products, promotions);
         int totalCount = 0;
         for (Order order : orders) {
             totalCount += order.getQuantity();
             Product product = products.findByName(order.getName());
             Promotion promotion = promotions.findByName(product.getPromotion());
-            if (promotion != null && order.more && order.getQuantity() % (promotion.getBuyCount() + promotion.getGetCount()) != 0
-                    && order.getQuantity() > (promotion.getBuyCount() + promotion.getGetCount())) {
-                totalCount += promotion.getGetCount();
-            }
-            if  (order.more) {
-                totalCount += 1;
+            if (promotion != null && now.isAfter(promotion.getStartDate()) && now.isBefore(promotion.getEndDate())) {
+                if (promotion.getBuyCount() == 1 && order.getQuantity() >= 2 && order.getQuantity() >= promotion.getBuyCount()) {
+                    totalCount += order.getQuantity() / 2;
+                }
+                if (promotion.getBuyCount() == 2 && order.getQuantity() >= 3 && order.getQuantity() >= promotion.getBuyCount()) {
+                    totalCount += order.getQuantity() / 3;
+                }
             }
         }
-        int membershipDiscount = 0;
-        if (membership.isMember()) {
-            membershipDiscount = calculateMembershipDiscount(products, promotions, membership);
-        }
-        int payment = originalPrice - promotionDiscount - membershipDiscount;
-
-        return makeString(products, promotions, originalPrice, totalCount, promotionDiscount, membershipDiscount, payment);
+        int membershipDiscount = calculateMembershipDiscount(products, promotions, membership);
+        int payment = totalPrice - promotionDiscount - membershipDiscount;
+        return makeString(products, promotions, totalPrice, totalCount, promotionDiscount, membershipDiscount, payment);
     }
 
-    private String makeString(final Products products, final Promotions promotions, final int originalPrice, final int totalCount, final int promotionDiscount, final int membershipDiscount, final int payment) {
+    private String makeString(final Products products, final Promotions promotions, final int totalPrice, final int totalCount, final int promotionDiscount, final int membershipDiscount, final int payment) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("==============W 편의점================\n");
         stringBuilder.append("상품명\t\t수량\t금액\n");
@@ -153,7 +152,7 @@ public class Orders {
             }
         }
         stringBuilder.append("====================================\n");
-        stringBuilder.append(String.format("총구매액\t\t%d\t%,d\n", totalCount, originalPrice));
+        stringBuilder.append(String.format("총구매액\t\t%d\t%,d\n", totalCount, totalPrice));
         stringBuilder.append(String.format("행사할인\t\t \t%,d\n", -promotionDiscount));
         stringBuilder.append(String.format("멤버십할인\t\t \t%,d\n", -membershipDiscount));
         stringBuilder.append(String.format("내실돈\t\t \t%,d", payment));
