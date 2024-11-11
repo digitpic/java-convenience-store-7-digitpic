@@ -18,7 +18,7 @@ public class OutputView {
     }
 
     public void printErrorMessage(final String message) {
-        System.out.println(message + LINE_BREAK);
+        System.out.println(LINE_BREAK + message);
     }
 
     public void printReceipt(final String message) {

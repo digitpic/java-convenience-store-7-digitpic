@@ -4,8 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static store.constants.ExceptionMessage.ERROR_WITH_OPENING_CSV_FILE;
 import static store.constants.ExceptionMessage.INPUT_CANNOT_HAVE_FIRST_LAST_BLANK;
@@ -66,5 +68,19 @@ class PromotionTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Promotion(input))
                 .withMessage(INPUT_VALUE_MUST_BE_NUMERIC.getMessage());
+    }
+
+    @Test
+    void endDate_에_대해_getter_를_사용할_수_있다() {
+        // given
+        String information = "탄산2+1,2,1,2024-01-01,2024-12-31";
+        Promotion promotion = new Promotion(information);
+
+        // when
+        LocalDateTime real = promotion.getEndDate();
+
+        // then
+        LocalDateTime expected = LocalDateTime.of(2024, 12, 31, 23, 59, 59);
+        assertThat(real).isEqualTo(expected);
     }
 }

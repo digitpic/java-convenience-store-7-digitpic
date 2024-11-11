@@ -1,5 +1,9 @@
 package store.model.product;
 
+import store.model.order.Order;
+import store.model.promotion.Promotion;
+import store.model.promotion.Promotions;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,7 +11,6 @@ import static store.constants.ExceptionMessage.INPUT_CANNOT_HAVE_FIRST_LAST_BLAN
 import static store.constants.ExceptionMessage.INPUT_MUST_CONTAIN_COMMA;
 import static store.constants.ExceptionMessage.INPUT_VALUE_MUST_BE_NUMERIC;
 import static store.constants.ExceptionMessage.INVALID_PRODUCT_INFORMATION_COUNT;
-import static store.constants.ExceptionMessage.NOT_ALLOWED_OVER_QUANTITY;
 
 public class Product {
     private static final int NAME_INDEX = 0;
@@ -53,14 +56,17 @@ public class Product {
         return promotion;
     }
 
-    public void decreaseQuantity(final int quantity) {
-        validateOverQuantity(quantity);
-        this.quantity -= quantity;
-    }
-
-    private void validateOverQuantity(final int quantity) {
-        if (this.quantity < quantity) {
-            throw new IllegalArgumentException(NOT_ALLOWED_OVER_QUANTITY.getMessage());
+    public void decreaseQuantity(final Promotion promotion, int stock, final boolean more) {
+        if (more) {
+            stock += promotion.getGetCount();
+        }
+        if (stock > quantity) {
+            int groupCount = quantity / (promotion.getBuyCount() + promotion.getGetCount());
+            int coveredCount = groupCount * (promotion.getBuyCount() + promotion.getGetCount());
+            this.quantity -= coveredCount;
+        }
+        if (stock <= quantity) {
+            this.quantity -= stock;
         }
     }
 

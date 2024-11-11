@@ -36,7 +36,7 @@ public class StoreController {
             Orders orders = requestOrders(products, promotions);
             Membership membership = requestMembership();
             printReceipt(orders.makeReceipt(products, promotions, membership));
-            updateStockStatus(products, orders);
+            updateStockStatus(products, promotions, orders);
             Restart restart = requestRestartConfirmation();
             if (!restart.getIsRestart()) {
                 // writeStockStatus(products);
@@ -118,12 +118,12 @@ public class StoreController {
             Promotion promotion = promotions.findByName(product.getPromotion());
             if (promotion != null) {
                 int promotionStockRequired = calculateRequiredPromotionStock(order, promotion);
-                checkPromotionStock(products, order, promotionStockRequired, product);
+                checkPromotionStock(products, promotion, order, promotionStockRequired, product);
             }
         }
     }
 
-    private int calculateRequiredPromotionStock(Order order, Promotion promotion) {
+    private int calculateRequiredPromotionStock(final Order order, final Promotion promotion) {
         int stock = order.getQuantity();
         if (order.more) {
             stock += promotion.getGetCount();
@@ -131,9 +131,11 @@ public class StoreController {
         return stock;
     }
 
-    private void checkPromotionStock(final Products products, final Order order, final int promotionStockRequired, final Product product) {
+    private void checkPromotionStock(final Products products, final Promotion promotion, final Order order, final int promotionStockRequired, final Product product) {
         if (promotionStockRequired > product.getQuantity()) {
-            int insufficientQuantity = promotionStockRequired - product.getQuantity();
+            int groupCount = product.getQuantity() / (promotion.getBuyCount() + promotion.getGetCount());
+            int coveredCount = groupCount * (promotion.getBuyCount() + promotion.getGetCount());
+            int insufficientQuantity = promotionStockRequired - coveredCount;
             processInsufficientStockCase(products, product, order, insufficientQuantity);
         }
     }
@@ -155,7 +157,7 @@ public class StoreController {
 
     private void addFullPriceQuantity(Order order, int insufficientQuantity) {
         for (int i = 0; i < insufficientQuantity; i++) {
-            order.increaseQuantity();
+            // todo: 일반 재고 구매 처리
         }
     }
 
@@ -163,15 +165,15 @@ public class StoreController {
         for (Order order : orders.getOrders()) {
             Product product = products.findByName(order.getName());
             Product second = products.findByNameSecond(order.getName());
-            if (product.getQuantity() < order.getQuantity() && second.getQuantity() < order.getQuantity()) {
+            if (product.getQuantity() + second.getQuantity() < order.getQuantity()) {
                 throw new IllegalArgumentException(NOT_ALLOWED_OVER_QUANTITY.getMessage());
             }
         }
     }
 
-    private void updateStockStatus(final Products products, final Orders orders) {
+    private void updateStockStatus(final Products products, final Promotions promotions, final Orders orders) {
         for (Order order : orders.getOrders()) {
-            products.updateStockStatus(order);
+            products.updateStockStatus(promotions, order);
         }
     }
 

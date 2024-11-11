@@ -1,6 +1,7 @@
 package store.model.product;
 
 import store.model.order.Order;
+import store.model.promotion.Promotions;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,9 +31,9 @@ public class Products {
         return stringBuilder.toString();
     }
 
-    public void updateStockStatus(final Order order) {
+    public void updateStockStatus(final Promotions promotions, final Order order) {
         Product product = findByName(order.getName());
-        product.decreaseQuantity(order.getQuantity());
+        product.decreaseQuantity(promotions.findByName(order.getName()), order.getQuantity(), order.more);
     }
 
     public Product findByName(final String name) {
