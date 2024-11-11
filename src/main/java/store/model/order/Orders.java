@@ -29,18 +29,23 @@ public class Orders {
             Product product = products.findByName(order.getName());
             Promotion promotion = promotions.findByName(product.getPromotion());
             if (promotion != null && now.isAfter(promotion.getStartDate()) && now.isBefore(promotion.getEndDate())) {
-                if (promotion.getBuyCount() == 1 && order.getQuantity() >= 1) {
-                    discount += order.getQuantity() / 2 * product.getPrice();
-                    if (discount == 0 && order.more) {
-                        discount += product.getPrice() * promotion.getGetCount();
-                    }
-                }
-                if (promotion.getBuyCount() == 2 && order.getQuantity() >= 2) {
-                    discount += order.getQuantity() / 3 * product.getPrice();
-                    if (discount == 0 && order.more) {
-                        discount += product.getPrice() * promotion.getGetCount();
-                    }
-                }
+                discount = getDiscount(order, promotion, discount, product);
+            }
+        }
+        return discount;
+    }
+
+    private static int getDiscount(final Order order, final Promotion promotion, int discount, final Product product) {
+        if (promotion.getBuyCount() == 1 && order.getQuantity() >= 1) {
+            discount += order.getQuantity() / 2 * product.getPrice();
+            if (discount == 0 && order.more) {
+                discount += product.getPrice() * promotion.getGetCount();
+            }
+        }
+        if (promotion.getBuyCount() == 2 && order.getQuantity() >= 2) {
+            discount += order.getQuantity() / 3 * product.getPrice();
+            if (discount == 0 && order.more) {
+                discount += product.getPrice() * promotion.getGetCount();
             }
         }
         return discount;

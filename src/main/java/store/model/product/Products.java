@@ -33,7 +33,7 @@ public class Products {
 
     public void updateStockStatus(final Promotions promotions, final Order order) {
         Product product = findByName(order.getName());
-        product.decreaseQuantity(promotions.findByName(order.getName()), order.getQuantity(), order.more);
+        product.decreaseQuantity(promotions.findByName(product.getPromotion()), order.getQuantity(), order.more);
     }
 
     public Product findByName(final String name) {

@@ -31,9 +31,22 @@ public class StoreController {
     public void run() {
         Products products = getProductsInformation();
         Promotions promotions = getPromotionsInformation();
+        startStore(products, promotions);
+    }
+
+    private Products getProductsInformation() {
+        List<String> productsInformation = CsvReader.getProductsData();
+        return new Products(productsInformation);
+    }
+
+    private Promotions getPromotionsInformation() {
+        List<String> promotionsInformation = CsvReader.getPromotionsData();
+        return new Promotions(promotionsInformation);
+    }
+
+    private void startStore(final Products products, final Promotions promotions) {
         while (true) {
-            printStockStatus(products.toString());
-            Orders orders = requestOrders(products, promotions);
+            Orders orders = getOrders(products, promotions);
             Membership membership = requestMembership();
             printReceipt(orders.makeReceipt(products, promotions, membership));
             updateStockStatus(products, promotions, orders);
@@ -45,18 +58,9 @@ public class StoreController {
         }
     }
 
-    private void printReceipt(final String message) {
-        outputView.printReceipt(message);
-    }
-
-    private Products getProductsInformation() {
-        List<String> productsInformation = CsvReader.getProductsData();
-        return new Products(productsInformation);
-    }
-
-    private Promotions getPromotionsInformation() {
-        List<String> promotionsInformation = CsvReader.getPromotionsData();
-        return new Promotions(promotionsInformation);
+    private Orders getOrders(final Products products, final Promotions promotions) {
+        printStockStatus(products.toString());
+        return requestOrders(products, promotions);
     }
 
     private void printStockStatus(final String stockStatus) {
@@ -97,12 +101,7 @@ public class StoreController {
 
     private void confirm(final Order order) {
         More more = requestAddPromotionProductConfirmation(order);
-        if (more.getMore()) {
-            order.more = true;
-        }
-        if (!more.getMore()) {
-            order.more = false;
-        }
+        order.more = more.getMore();
     }
 
     private More requestAddPromotionProductConfirmation(final Order order) {
@@ -171,17 +170,21 @@ public class StoreController {
         }
     }
 
-    private void updateStockStatus(final Products products, final Promotions promotions, final Orders orders) {
-        for (Order order : orders.getOrders()) {
-            products.updateStockStatus(promotions, order);
-        }
-    }
-
     private Membership requestMembership() {
         return getValidInput(() -> {
             String rawMembership = inputView.requestMembership();
             return new Membership(rawMembership);
         });
+    }
+
+    private void printReceipt(final String message) {
+        outputView.printReceipt(message);
+    }
+
+    private void updateStockStatus(final Products products, final Promotions promotions, final Orders orders) {
+        for (Order order : orders.getOrders()) {
+            products.updateStockStatus(promotions, order);
+        }
     }
 
     private Restart requestRestartConfirmation() {

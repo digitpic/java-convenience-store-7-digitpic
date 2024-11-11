@@ -40,6 +40,27 @@ public class Product {
         return String.format("- %s %,d원 %s %s\n", name, price, quantityDisplay, promotionDisplay);
     }
 
+    public void decreaseQuantity(final Promotion promotion, int stock, final boolean more) {
+        if (more) {
+            stock += promotion.getGetCount();
+        }
+        if (stock > quantity) {
+            int groupCount = quantity / (promotion.getBuyCount() + promotion.getGetCount());
+            int coveredCount = groupCount * (promotion.getBuyCount() + promotion.getGetCount());
+            this.quantity -= coveredCount;
+        }
+        if (stock <= quantity) {
+            this.quantity -= stock;
+        }
+    }
+
+    public String makeCsv() {
+        if (quantity == 0 && promotion.equals("null")) {
+            return "";
+        }
+        return String.format("%s,%s,%s,%s\n", name, price, quantity, promotion);
+    }
+
     public String getName() {
         return name;
     }
@@ -54,20 +75,6 @@ public class Product {
 
     public String getPromotion() {
         return promotion;
-    }
-
-    public void decreaseQuantity(final Promotion promotion, int stock, final boolean more) {
-        if (more) {
-            stock += promotion.getGetCount();
-        }
-        if (stock > quantity) {
-            int groupCount = quantity / (promotion.getBuyCount() + promotion.getGetCount());
-            int coveredCount = groupCount * (promotion.getBuyCount() + promotion.getGetCount());
-            this.quantity -= coveredCount;
-        }
-        if (stock <= quantity) {
-            this.quantity -= stock;
-        }
     }
 
     private String makeQuantityDisplay(final int quantity) {
@@ -129,12 +136,5 @@ public class Product {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(INPUT_VALUE_MUST_BE_NUMERIC.getMessage());
         }
-    }
-
-    public String makeCsv() {
-        if (quantity == 0 && promotion.equals("null")) {
-            return "";
-        }
-        return String.format("%s,%s,%s,%s\n", name, price, quantity, promotion);
     }
 }
