@@ -11,7 +11,7 @@ public class Order {
     private static final int QUANTITY_INDEX = 1;
 
     private final String name;
-    public boolean more = true;
+    public boolean more;
     private int quantity;
 
     public Order(final String order) {

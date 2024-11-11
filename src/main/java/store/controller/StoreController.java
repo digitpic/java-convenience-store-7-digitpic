@@ -97,6 +97,9 @@ public class StoreController {
 
     private void confirm(final Order order) {
         More more = requestAddPromotionProductConfirmation(order);
+        if (more.getMore()) {
+            order.more = true;
+        }
         if (!more.getMore()) {
             order.more = false;
         }
