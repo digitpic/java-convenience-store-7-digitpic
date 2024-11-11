@@ -89,13 +89,13 @@ public class Orders {
                 int orderPrice = product.getPrice() * (order.getQuantity() + promotion.getGetCount());
                 totalPrice += orderPrice;
                 totalCount += order.getQuantity() + promotion.getGetCount();
-                stringBuilder.append(String.format("%s\t\t%d\t%,d\n", order.getName(), order.getQuantity() + promotion.getGetCount(), orderPrice));
+                stringBuilder.append(String.format("%s\t\t%d \t%,d\n", order.getName(), order.getQuantity() + promotion.getGetCount(), orderPrice));
             }
             if (!order.more) {
                 int orderPrice = product.getPrice() * order.getQuantity();
                 totalPrice += orderPrice;
                 totalCount += order.getQuantity();
-                stringBuilder.append(String.format("%s\t\t%d\t%,d\n", order.getName(), order.getQuantity(), orderPrice));
+                stringBuilder.append(String.format("%s\t\t%d \t%,d\n", order.getName(), order.getQuantity(), orderPrice));
             }
         }
         stringBuilder.append("=============증\t정===============\n");
@@ -114,7 +114,7 @@ public class Orders {
     private static void makePromotionString(final Order order, final Promotion promotion, int freeProductCount, final StringBuilder stringBuilder) {
         freeProductCount = getFreeProductCount(order, promotion, freeProductCount);
         if (freeProductCount > 0) {
-            stringBuilder.append(order.getName()).append("\t\t").append(freeProductCount).append("\t").append("\n");
+            stringBuilder.append(order.getName()).append("\t\t").append(freeProductCount).append("\n");
         }
     }
 
@@ -141,9 +141,9 @@ public class Orders {
         int payment = totalPrice - promotionDiscount - membershipDiscount;
         stringBuilder.append("====================================\n");
         stringBuilder.append(String.format("총구매액\t\t%d\t%,d\n", totalCount, totalPrice));
-        stringBuilder.append(String.format("행사할인\t\t \t-%,d\n", promotionDiscount));
-        stringBuilder.append(String.format("멤버십할인\t\t \t-%,d\n", membershipDiscount));
-        stringBuilder.append(String.format("내실돈\t\t \t%,d", payment));
+        stringBuilder.append(String.format("행사할인\t\t\t-%,d\n", promotionDiscount));
+        stringBuilder.append(String.format("멤버십할인\t\t\t-%,d\n", membershipDiscount));
+        stringBuilder.append(String.format("내실돈\t\t\t %,d", payment));
     }
 
     public List<Order> getOrders() {
